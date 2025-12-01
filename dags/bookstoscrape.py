@@ -13,7 +13,7 @@ import os
 
 DAG_ID = 'bookstoscrape'
 POSTGRES_CONN_ID = 'postgresql_conn_id'
-FILE_PATH = '../data/books.csv'
+FILE_PATH = '/opt/airflow/data/books.csv'
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -255,70 +255,37 @@ def load_csv_to_postgres(file_path: str, conn_id: str, table_name: str):
     logging.info(f'Conexão com PostgreSQL estabelecida (ID: {conn_id})')
 
     table_schema = {
-        'title': 'VARCHAR(500)',
-        'genre': 'VARCHAR(100)',
-        'price': 'NUMERIC(10, 2)',
-        'availability': 'INTEGER',
-        'rating': 'VARCHAR(50)',
-        'upc': 'VARCHAR(50)',
-        'description': 'TEXT',
-        'product_type': 'VARCHAR(50)',
-        'price_excl_tax': 'NUMERIC(10, 2)',
-        'price_incl_tax': 'NUMERIC(10, 2)',
-        'tax': 'NUMERIC(10, 2)',
-        'number_of_reviews': 'INTEGER',
-        'url': 'VARCHAR(1024)'
+        'title': 'VARCHAR(500)', 'genre': 'VARCHAR(100)', 'price': 'NUMERIC(10, 2)',
+        'availability': 'INTEGER', 'rating': 'VARCHAR(50)', 'upc': 'VARCHAR(50)',
+        'description': 'TEXT', 'product_type': 'VARCHAR(50)', 'price_excl_tax': 'NUMERIC(10, 2)',
+        'price_incl_tax': 'NUMERIC(10, 2)', 'tax': 'NUMERIC(10, 2)',
+        'number_of_reviews': 'INTEGER', 'url': 'VARCHAR(1024)'
     }
 
-    #gera a lista de colunas com tipos para o comando CREATE TABLE
     columns_with_types = [f'"{col}" {table_schema.get(col, "TEXT")}' for col in df.columns]
+    columns = list(df.columns)
     
-    #define o UPC como chave primária para a restrição UNIQUE, necessária para ON CONFLICT
     create_table_sql = f'CREATE TABLE IF NOT EXISTS {table_name} ({", \n".join(columns_with_types)}, PRIMARY KEY ("upc"));'
     
     logging.info(f'Garantindo a existência e restrições da tabela "{table_name}"...')
     pg_conn.run(create_table_sql)
     logging.info(f'Tabela "{table_name}" verificada com sucesso.')
 
+    truncate_sql = f'TRUNCATE TABLE {table_name} RESTART IDENTITY;'
+    logging.info(f'Truncando a tabela "{table_name}"...')
+    pg_conn.run(truncate_sql)
+
     rows = [tuple(row) for row in df.values]
-    columns = list(df.columns)
-    
-    
-    #lista de campos a serem atualizados em caso de conflito (excluindo 'upc', a chave)
-    update_cols = [col for col in columns if col != 'upc']
-    set_clause = [f'"{col}" = EXCLUDED."{col}"' for col in update_cols]
-    set_clause_str = ', '.join(set_clause)
 
-    #comando SQL completo para upsert
-    temp_table_name = f'temp_{table_name}_{datetime.now().strftime("%Y%m%d%H%M%S")}'
-
-    #cria uma tabela temporária com os dados do CSV
-    logging.info(f'Criando tabela temporária "{temp_table_name}"...')
-    create_temp_sql = f'''
-        CREATE TEMP TABLE {temp_table_name} ({", \n".join(columns_with_types)}) ON COMMIT DROP;
-    '''
-    pg_conn.run(create_temp_sql)
-
-    #carrega os dados do DataFrame na tabela temporária
-    logging.info(f'Carregando {len(rows)} linhas na tabela temporária...')
-    temp_csv_path = f'/tmp/{temp_table_name}.csv'
-    df.to_csv(temp_csv_path, index=False, header=False, encoding='utf-8')
+    logging.info(f'Iniciando a inserção de {len(rows)} linhas na tabela "{table_name}"...')
     
-    with open(temp_csv_path, 'r', encoding='utf-8') as f:
-        pg_conn.copy_expert(f'COPY {temp_table_name} ({", ".join([f'"{c}"' for c in columns])}) FROM STDIN WITH CSV', f)
-    os.remove(temp_csv_path)
-    logging.info('Carregamento na tabela temporária concluído.')
-
-    #executa o upsert
-    upsert_sql = f'''
-        INSERT INTO {table_name} ({", ".join([f'"{c}"' for c in columns])})
-        SELECT {", ".join([f'"{c}"' for c in columns])} FROM {temp_table_name}
-        ON CONFLICT ("upc") DO UPDATE SET {set_clause_str};
-    '''
+    pg_conn.insert_rows(
+        table=table_name,
+        rows=rows,
+        target_fields=columns
+    )
     
-    logging.info(f'Executando operação UPSERT na tabela "{table_name}"...')
-    pg_conn.run(upsert_sql)
-    logging.info('Dados inseridos/atualizados com sucesso.')
+    logging.info('Dados inseridos com sucesso (Truncate and Load).')
 
 
 with DAG(
