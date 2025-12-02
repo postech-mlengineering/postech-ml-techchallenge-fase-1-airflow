@@ -11,6 +11,7 @@ from typing import List, Dict, Any, Optional
 import os
 
 
+
 DAG_ID = 'bookstoscrape'
 POSTGRES_CONN_ID = 'postgresql_conn_id'
 FILE_PATH = '/opt/airflow/data/books.csv'
@@ -209,12 +210,12 @@ def scrape_data(file_path: str):
         df = pd.DataFrame(data)
         #colunas ordenadas para o output final
         ordered_columns = [
+            'upc', 
             'title', 
             'genre', 
             'price', 
             'availability', 
             'rating', 
-            'upc', 
             'description',
             'product_type', 
             'price_excl_tax', 
@@ -223,7 +224,6 @@ def scrape_data(file_path: str):
             'number_of_reviews',
             'url'
         ]
-        
         df = df[ordered_columns]
         logging.info("DataFrame criado com sucesso!")
         
@@ -290,8 +290,8 @@ def load_csv_to_postgres(file_path: str, conn_id: str, table_name: str):
 
 with DAG(
     dag_id=DAG_ID,
-    start_date=datetime(2023, 1, 1),
-    schedule=None,
+    start_date=datetime(2025, 12, 1),
+    schedule='0 0 * * *',
     catchup=False,
     tags=['webscraping', 'bookstoscrape',],
     doc_md='''

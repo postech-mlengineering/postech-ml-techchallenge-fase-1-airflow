@@ -1,0 +1,30 @@
+[project]
+name = "postech-ml-techchallenge-fase-1-airflow"
+version = "0.1.0"
+description = "Airflow para o Tech Challenge da Fase 1 da Pós-Graduação em Machine Learning Engineering da FIAP."
+authors = [
+    {name = "jorgeplatero",email = "jorge.platero@outlook.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11, <3.14"
+dependencies = [
+    "beautifulsoup4 (>=4.14.2,<5.0.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "apache-airflow-providers-postgres (>=6.5.0,<7.0.0)"
+]
+
+
+[tool.poetry]
+package-mode = false
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "sqlalchemy2-stubs (>=0.0.2a38,<0.0.3)"
+]
