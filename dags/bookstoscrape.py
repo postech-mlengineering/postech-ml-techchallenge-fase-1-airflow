@@ -82,6 +82,11 @@ def extract_book_details(url: str, genre: str) -> Optional[Dict[str, Any]]:
         detail_response.raise_for_status()
         detail_soup = BeautifulSoup(detail_response.text, 'html.parser')
 
+        #extraindo link da imagem
+        image_tag = detail_soup.find('div', class_='item active').find('img')
+        image_relative_url = image_tag['src']
+        image_url = BASE_URL + image_relative_url.replace('../../', '')
+
         #extraindo dados simples
         title = detail_soup.find('h1').text
         
@@ -126,7 +131,8 @@ def extract_book_details(url: str, genre: str) -> Optional[Dict[str, Any]]:
             'availability': availability,
             'rating': rating,
             'description': description,
-            'url': url
+            'url': url,
+            'image_url': image_url
         }
     except Exception as e:
         logging.error(f'Erro ao extrair detalhes de {url}: {e}')
@@ -222,7 +228,8 @@ def scrape_data(file_path: str):
             'price_incl_tax', 
             'tax', 
             'number_of_reviews',
-            'url'
+            'url',
+            'image_url'
         ]
         df = df[ordered_columns]
         logging.info("DataFrame criado com sucesso!")
@@ -259,7 +266,7 @@ def load_csv_to_postgres(file_path: str, conn_id: str, table_name: str):
         'availability': 'INTEGER', 'rating': 'VARCHAR(50)', 'upc': 'VARCHAR(50)',
         'description': 'TEXT', 'product_type': 'VARCHAR(50)', 'price_excl_tax': 'NUMERIC(10, 2)',
         'price_incl_tax': 'NUMERIC(10, 2)', 'tax': 'NUMERIC(10, 2)',
-        'number_of_reviews': 'INTEGER', 'url': 'VARCHAR(1024)'
+        'number_of_reviews': 'INTEGER', 'url': 'VARCHAR(1024)', 'image_url': 'VARCHAR(1024)'
     }
 
     columns_with_types = [f'"{col}" {table_schema.get(col, "TEXT")}' for col in df.columns]
