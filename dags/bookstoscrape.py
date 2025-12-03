@@ -252,7 +252,7 @@ def load_csv_to_postgres(file_path: str, conn_id: str, table_name: str):
         raise FileNotFoundError(f'CSV file not found: {file_path}')
 
     logging.info(f'Lendo dados do CSV em {file_path}')
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, encoding='utf-8')
 
     if df.empty:
         logging.warning("O DataFrame está vazio. Nenhuma inserção será feita.")
