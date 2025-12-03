@@ -119,10 +119,10 @@ def extract_book_details(url: str, genre: str) -> Optional[Dict[str, Any]]:
         number_of_reviews = int(product_table[6].text) if product_table[6].text.isdigit() else 0
 
         return {
+            'upc': upc,
             'title': title,
             'genre': genre,
             'price': price,
-            'upc': upc,
             'product_type': product_type,
             'price_excl_tax': price_excl_tax,
             'price_incl_tax': price_incl_tax,
@@ -262,10 +262,9 @@ def load_csv_to_postgres(file_path: str, conn_id: str, table_name: str):
     logging.info(f'Conexão com PostgreSQL estabelecida (ID: {conn_id})')
 
     table_schema = {
-        'title': 'VARCHAR(500)', 'genre': 'VARCHAR(100)', 'price': 'NUMERIC(10, 2)',
-        'availability': 'INTEGER', 'rating': 'VARCHAR(50)', 'upc': 'VARCHAR(50)',
-        'description': 'TEXT', 'product_type': 'VARCHAR(50)', 'price_excl_tax': 'NUMERIC(10, 2)',
-        'price_incl_tax': 'NUMERIC(10, 2)', 'tax': 'NUMERIC(10, 2)',
+        'upc': 'VARCHAR(50)', 'title': 'VARCHAR(500)', 'genre': 'VARCHAR(100)', 'price': 'NUMERIC(10, 2)',
+        'availability': 'INTEGER', 'rating': 'VARCHAR(50)', 'description': 'TEXT', 'product_type': 'VARCHAR(50)', 
+        'price_excl_tax': 'NUMERIC(10, 2)', 'price_incl_tax': 'NUMERIC(10, 2)', 'tax': 'NUMERIC(10, 2)',
         'number_of_reviews': 'INTEGER', 'url': 'VARCHAR(1024)', 'image_url': 'VARCHAR(1024)'
     }
 
