@@ -49,7 +49,7 @@ A API estará rodando em http://localhost:8080. Certifique-se de configurar as v
 
 A DAG interage diretamente com a API que gerencia o banco de dados e o motor de predição. O repositório da API pode ser acessado em:
 
-Repositório GitHub: https://
+Repositório GitHub: https://github.com/postech-mlengineering/postech-ml-techchallenge-fase-1-api
 
 ### Deploy
 
