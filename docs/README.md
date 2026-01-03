@@ -1,6 +1,6 @@
 # Repositório do Airflow para o Tech Challenge da Fase 1 da Pós-Graduação em Machine Learning Engineering da FIAP
 
-Este repositório cosiste na camada de orquestração desenvolvida para gerenciar o ciclo de vida completo dos dados da aplicação BooksToScrape. O pipeline automatiza o fluxo que alimenta o motor de recomendação da aplicação, garantindo a integridade e a atualização constante dos dados.
+Este repositório consiste na camada de orquestração desenvolvida para gerenciar o ciclo de vida completo dos dados da aplicação BooksToScrape. O pipeline automatiza o fluxo que alimenta o motor de recomendação da aplicação, garantindo a integridade e a atualização constante dos dados.
 
 ### Pré-requisitos
 
@@ -38,22 +38,16 @@ A API estará rodando em http://localhost:8080. Certifique-se de configurar as v
 
 ### Tecnologias
 
-A aplicação atua como o orquestrador que gerencia a ordem e a integridade das operações na API.
-
-| Componente | Tecnologia | Versão (Especificada) | Descrição |
+| Componente | Tecnologia | Versão | Descrição |
 | :--- | :--- | :--- | :--- |
 | **Orquestrador** | **Apache Airflow** | `^2.10.0` | Framework para programar, agendar e monitorar fluxos de trabalho. |
 | **Linguagem** | **Python** | `>=3.11, <3.14` | Linguagem base para o desenvolvimento dos scripts e operadores da DAG. |
-| **Requisições** | **Requests** | `>=2.32.5, <3.0.0` | Cliente HTTP utilizado para interagir com os endpoints da API. |
-| **Manipulação Dados** | **Pandas** | `>=2.3.3, <3.0.0` | Biblioteca para processamento e análise de dados tabulares. |
-| **Parsing Web** | **BeautifulSoup4** | `>=4.14.2, <5.0.0` | Utilizada para extração de dados de arquivos HTML e XML. |
-| **Conectividade DB** | **Airflow Postgres** | `>=6.5.0` | Provider para interação com o banco de dados de metadados. |
-| **Ambiente** | **Docker** | `-` | Containerização para garantir paridade entre ambientes. |
 | **Gerenciamento** | **Poetry** | `^2.0.0` | Gerenciador de dependências e construção do ambiente. |
+| **Ambiente** | **Docker** | `29.1.1` | Containerização para garantir paridade entre ambientes. |
 
 ### Integrações
 
-A DAG interage diretamente com a API Flask que gerencia o banco de dados e o motor de predição. O repositório da API pode ser acessado em:
+A DAG interage diretamente com a API que gerencia o banco de dados e o motor de predição. O repositório da API pode ser acessado em:
 
 Repositório GitHub: https://
 
