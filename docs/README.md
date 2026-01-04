@@ -99,5 +99,3 @@ A DAG interage diretamente com a API que gerencia o banco de dados e o motor de 
 Repositório GitHub: https://github.com/postech-mlengineering/postech-ml-techchallenge-fase-1-api
 
 ### Deploy
-
-Esta API possui arquivo de configuração para Deploy no Vercel. Para realizar o deploy, certifique-se de que o arquivo vercel.json esteja na raiz, apontando para api.py como fonte principal. O Vercel gerenciará o ambiente com base no pyproject.toml.
