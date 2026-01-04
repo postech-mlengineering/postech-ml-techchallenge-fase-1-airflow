@@ -1,6 +1,6 @@
 # Repositório do Airflow para o Tech Challenge da Fase 1 da Pós-Graduação em Machine Learning Engineering da FIAP
 
-Este repositório consiste na camada de orquestração desenvolvida para gerenciar o ciclo de vida completo dos dados da aplicação BooksToScrape. O pipeline automatiza o fluxo que alimenta o motor de recomendação da aplicação, garantindo a integridade e a atualização constante dos dados.
+Este repositório consiste na camada de orquestração desenvolvida com Apache Airflow, projetada para automatizar o ciclo de vida dos dados ao integrar o fluxo de extração (web scraping) à atualização periódica das matrizes de similaridade baseadas em TF-IDF. Por meio da coordenação do workflow de ETL e da sincronização dos artefatos de ML, a solução estabelece uma arquitetura ML-ready que assegura a integridade e a disponibilidade de informações atualizadas para consumo.
 
 ### Pré-requisitos
 
@@ -40,10 +40,10 @@ A API estará rodando em http://localhost:8080. Certifique-se de configurar as v
 
 | Componente | Tecnologia | Versão | Descrição |
 | :--- | :--- | :--- | :--- |
-| **Orquestrador** | **Apache Airflow** | `^2.10.0` | Framework para programar, agendar e monitorar fluxos de trabalho. |
-| **Linguagem** | **Python** | `>=3.11, <3.14` | Linguagem base para o desenvolvimento dos scripts e operadores da DAG. |
-| **Gerenciamento** | **Poetry** | `^2.0.0` | Gerenciador de dependências e construção do ambiente. |
-| **Ambiente** | **Docker** | `29.1.1` | Containerização para garantir paridade entre ambientes. |
+| **Orquestrador** | **Apache Airflow** | `^2.10.0` | Framework para orquestração do fluxo de trabalho |
+| **Linguagem** | **Python** | `>=3.11, <3.14` | Linguagem base para o desenvolvimento dos scripts |
+| **Infraestrutura** | **Docker** | `3.8 (Compose)` | Ferramenta de containerização que garante a paridade entre ambientes |
+| **Gerenciamento** | **Poetry** | `2.2.1` | Gerenciador de pacotes e ambientes virtuais utilizado para garantir a reprodutibilidade das dependências do projeto |
 
 ### Integrações
 
