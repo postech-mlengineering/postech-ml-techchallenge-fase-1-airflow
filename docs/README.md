@@ -2,6 +2,53 @@
 
 Este repositório consiste na camada de orquestração desenvolvida com Apache Airflow, projetada para automatizar o ciclo de vida dos dados ao integrar o fluxo de extração (web scraping) à atualização periódica das matrizes de similaridade baseadas em TF-IDF. Por meio da coordenação do workflow de ETL e da sincronização dos artefatos de ML, a solução estabelece uma arquitetura ML-ready que assegura a integridade e a disponibilidade de informações atualizadas para consumo.
 
+Arquitetura
+O diagrama abaixo ilustra a arquitetura do projeto na sua integridade e com suas principais funcionalidades:
+
+```mermaid
+graph LR
+    subgraph External_Source ["Fonte de Dados"]
+        Web["Books to Scrape"]
+    end
+
+    subgraph Orchestration_Layer ["Orquestração"]
+        Airflow["Apache Airflow"]
+    end
+
+    subgraph App_Layer ["API"]
+        direction TB
+        Scraper["Scraper"]
+        MLEngine["ML Engine"]
+        Auth["JWT"]
+    end
+
+    subgraph Storage_Layer ["Persistência"]
+        direction TB
+        DB[("PostgreSQL/SQLite")]
+        PKL["ML Artifacts"]
+    end
+
+    subgraph Presentation_Layer ["Aplicativo Web"]
+        Streamlit["Streamlit"]
+    end
+
+    %% Fluxos de Automação
+    Airflow --> Scraper
+    Airflow --> MLEngine
+
+    %% Fluxos de Dados
+    Scraper --> Web
+    Scraper --> DB
+    MLEngine --> DB
+    MLEngine --> PKL
+
+    %% Fluxo do Usuário
+    Streamlit --> Auth
+    Auth --> MLEngine
+    MLEngine --> PKL
+    MLEngine --> Streamlit
+```
+
 ### Pré-requisitos
 
 Certifique-se de ter o Python 3.11+ e o Poetry instalados em seu sistema. Para orquestração, recomenda-se o uso do Docker para rodar o ambiente Airflow.
